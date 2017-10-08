@@ -1,0 +1,8 @@
+C:\Users\admin\Desktop\Vodka Crypt Realese\Vodka Crypt\Vodka Crypt\bin\Debug\Vodka Crypt.exe
+C:\Users\admin\Desktop\Vodka Crypt Realese\Vodka Crypt\Vodka Crypt\bin\Debug\Vodka Crypt.pdb
+C:\Users\admin\Desktop\Vodka Crypt Realese\Vodka Crypt\Vodka Crypt\obj\Debug\Vodka Crypt.csprojResolveAssemblyReference.cache
+C:\Users\admin\Desktop\Vodka Crypt Realese\Vodka Crypt\Vodka Crypt\obj\Debug\Vodka_Crypt.Properties.Resources.resources
+C:\Users\admin\Desktop\Vodka Crypt Realese\Vodka Crypt\Vodka Crypt\obj\Debug\Vodka Crypt.csproj.GenerateResource.Cache
+C:\Users\admin\Desktop\Vodka Crypt Realese\Vodka Crypt\Vodka Crypt\obj\Debug\Vodka Crypt.exe
+C:\Users\admin\Desktop\Vodka Crypt Realese\Vodka Crypt\Vodka Crypt\obj\Debug\Vodka Crypt.pdb
+C:\Users\admin\Desktop\Vodka Crypt Realese\Vodka Crypt\Vodka Crypt\obj\Debug\Vodka_Crypt.mVodka.resources

